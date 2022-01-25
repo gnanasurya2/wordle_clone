@@ -1,0 +1,25 @@
+.row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-gap: 5px;
+  width: 100%;
+}
+
+.row[data-state="wrong"] {
+  animation: shakeIt 0.5s ease;
+}
+
+@keyframes shakeIt {
+  0% {
+    transform: translateX(0px);
+  }
+  25% {
+    transform: translateX(5px);
+  }
+  75% {
+    transform: translateX(-5px);
+  }
+  100% {
+    transform: translateX(0px);
+  }
+}

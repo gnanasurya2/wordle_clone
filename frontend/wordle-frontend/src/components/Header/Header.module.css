@@ -1,0 +1,25 @@
+.wrapper {
+    width: 100%;
+    border-bottom: 1px solid var(--grey);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+}
+
+.title {
+    position: absolute;
+    left: 0%;
+    right: 0%;
+    pointer-events: none;
+    text-align: center;
+    letter-spacing: 0.2rem;
+}
+
+.icon {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    color: var(--grey);
+    font-weight: 700;
+}

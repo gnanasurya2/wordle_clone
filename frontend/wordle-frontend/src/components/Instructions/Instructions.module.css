@@ -1,0 +1,14 @@
+.section {
+  border-bottom: 1px solid var(--grey);
+  padding: 20px 0px;
+}
+
+.section > p {
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.rowsData {
+  width: 200px;
+  margin: 20px 0px;
+}

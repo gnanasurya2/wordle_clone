@@ -1,0 +1,35 @@
+.keyboard {
+  width: 100%;
+  height: 100%;
+}
+
+.row {
+  display: flex;
+  margin: 0 auto 8px;
+}
+.key {
+  height: 60px;
+  background-color: grey;
+  flex: 1;
+  margin: 0px 4px;
+  border-radius: 4px;
+  font-size: 1rem;
+  color: var(--white);
+  text-transform: uppercase;
+}
+
+.half {
+  flex: 0.5;
+}
+
+.key[data-state="correct"] {
+  background-color: var(--correct);
+}
+
+.key[data-state="present"] {
+  background-color: var(--present);
+}
+
+.key[data-state="absent"] {
+  background-color: var(--grey);
+}

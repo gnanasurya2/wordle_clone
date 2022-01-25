@@ -1,0 +1,41 @@
+* {
+  margin: 0%;
+  padding: 0%;
+  box-sizing: border-box;
+}
+
+:root {
+  --black: #1a1a1b;
+  --white: #d7dadc;
+  --grey: #3a3a3c;
+  --orange: #f5793a;
+  --green: #538d4e;
+  --mute-gray: #343435;
+  --light-gray: #787c7e;
+  --light-blue: #85c0f9;
+  --yellow: #b59f3b;
+}
+
+[data-theme="light"] {
+  --background-color: var(--white);
+  --color: var(--black);
+}
+
+[data-theme="dark"] {
+  --background-color: var(--black);
+  --color: var(--white);
+}
+button {
+  background-color: transparent;
+  border: none;
+}
+body {
+  font-family: "Clear Sans", "Roboto", "Oxygen", "Ubuntu", "Cantarell",
+    "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  height: 100vh;
+  background-color: var(--background-color);
+  color: var(--color);
+  overflow: hidden;
+}

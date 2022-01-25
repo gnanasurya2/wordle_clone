@@ -1,0 +1,52 @@
+.wrapper {
+  position: absolute;
+  display: block;
+  top: 0%;
+  left: 0%;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  background-color: var(--background-color);
+}
+
+.animateIn {
+  animation: slideIn 0.2s linear;
+}
+
+@keyframes slideIn {
+  0% {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0px);
+    opacity: 1;
+  }
+}
+.closedWrapper {
+  display: none;
+}
+
+.headerWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  padding: 10px;
+}
+.iconWrapper {
+  position: absolute;
+  right: 0;
+  top: 10px;
+}
+.icon {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  color: var(--grey);
+  font-weight: 700;
+}
+
+.title {
+  text-transform: uppercase;
+}
