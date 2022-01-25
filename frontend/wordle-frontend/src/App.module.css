@@ -1,6 +1,6 @@
 .wrapper {
   margin: auto;
-  width: 40%;
+  max-width: 500px;
   position: relative;
   height: 100vh;
 }

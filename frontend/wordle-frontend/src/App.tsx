@@ -5,12 +5,13 @@ import Header from "./components/Header/Header";
 import Instructions from "./components/Instructions/Instructions";
 import Overlay from "./components/Overlay/Overlay";
 import Settings from "./components/Settings/Settings";
+import Statistics from "./components/Statistics/Statistics";
 
 function App() {
   const [isOverlayOpen, setIsOverlayOpen] = useState(false);
-  const [isInstructionsOpen, setIsInstructionsOpen] = useState(false);
+  const [isInstructionsOpen, setIsInstructionsOpen] = useState(true);
   const [contrastMode, setContrastMode] = useState("normal");
-
+  const [isStatisticsOpen, setIsStatisticsOpen] = useState(false);
   useEffect(() => {
     let theme = localStorage.getItem("theme");
     if (theme === null) {
@@ -43,6 +44,7 @@ function App() {
         <Header
           onSettingOpen={() => setIsOverlayOpen((state) => !state)}
           onInstructionsOpen={() => setIsInstructionsOpen((state) => !state)}
+          onStatisticsOpen={() => setIsStatisticsOpen(true)}
         />
         <GameBoard />
         <Overlay
@@ -61,6 +63,9 @@ function App() {
           onClose={() => setIsInstructionsOpen(false)}
         >
           <Instructions />
+        </Overlay>
+        <Overlay isOpen={isStatisticsOpen} header={false}>
+          <Statistics onClose={() => setIsStatisticsOpen(false)} />
         </Overlay>
       </div>
     </div>

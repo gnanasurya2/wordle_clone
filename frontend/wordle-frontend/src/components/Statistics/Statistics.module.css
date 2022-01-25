@@ -1,0 +1,69 @@
+.wrapper {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: #1a1a1bd2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  width: 100%;
+  /* height: 200px; */
+  background-color: #121213;
+  border-radius: 20px;
+  padding: 20px;
+  position: relative;
+}
+
+.iconWrapper {
+  width: 100%;
+  margin-bottom: 10px;
+}
+.icon {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  color: var(--white);
+  font-weight: 700;
+  float: right;
+}
+
+.contentWrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.title {
+  text-transform: uppercase;
+  width: 100%;
+  text-align: center;
+  margin: 20px 0px;
+}
+
+.percentageWrapper {
+  max-width: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.guessWrapper {
+  width: 100%;
+  /* height: 10px; */
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.bar {
+  background-color: var(--correct);
+  margin-left: 10px;
+  padding-right: 10px;
+}
+
+.bar > p {
+  float: right;
+}
