@@ -80,7 +80,7 @@ const GameBoard = () => {
       }
     }
     setKeyboardValues(map);
-    if (row < 4) {
+    if (row <= 4) {
       currentRow.current = row + 1;
     }
     setData(newData);
