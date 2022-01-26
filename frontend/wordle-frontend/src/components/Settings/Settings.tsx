@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import styles from "./Settings.module.css";
 import Toggle from "../Toggle/Toggle";
+import Button from "../Button/Button";
+import { useNavigate } from "react-router-dom";
 type SettingsProps = {
   onContrastChange: (state: boolean) => void;
   onThemeChange: (state: boolean) => void;
@@ -8,6 +10,7 @@ type SettingsProps = {
 const Settings = ({ onContrastChange, onThemeChange }: SettingsProps) => {
   const [initialContrastValue, setInitialContrastValue] = useState(true);
   const [initialThemeValuse, setInitialThemeValue] = useState(true);
+  const navigate = useNavigate();
   useEffect(() => {
     const theme = localStorage.getItem("theme"),
       contrast = localStorage.getItem("contrastMode");
@@ -15,6 +18,11 @@ const Settings = ({ onContrastChange, onThemeChange }: SettingsProps) => {
     setInitialThemeValue(theme === "dark");
     setInitialContrastValue(contrast === "contrast");
   }, []);
+
+  const logoutHandler = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
   return (
     <>
       <div className={styles.item}>
@@ -31,6 +39,12 @@ const Settings = ({ onContrastChange, onThemeChange }: SettingsProps) => {
           onChange={onContrastChange}
           initialValue={initialContrastValue}
         />
+      </div>
+      <div className={styles.item}>
+        <h3>Logout</h3>
+        <div>
+          <Button onClick={logoutHandler}>Logout</Button>
+        </div>
       </div>
     </>
   );

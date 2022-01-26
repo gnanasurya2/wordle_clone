@@ -1,3 +1,4 @@
+import axios from "../../helpers/axios";
 import React, { KeyboardEvent, useEffect, useRef, useState } from "react";
 import GameTiles from "../GameTiles/GameTiles";
 import Keyboard from "../Keyboard/Keyboard";
@@ -54,6 +55,12 @@ const GameBoard = () => {
   const [keyboardValues, setKeyboardValues] = useState(
     new Map<string, string>()
   );
+  useEffect(() => {
+    axios
+      .get("/")
+      .then((res) => console.log("base", res))
+      .catch((err) => console.log("base err", err));
+  }, []);
   const validateRow = () => {
     if (Math.random() < 0.6) {
       setWrongRow(currentRow.current);

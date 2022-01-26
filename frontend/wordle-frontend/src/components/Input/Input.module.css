@@ -1,0 +1,22 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  margin: 20px 0px;
+}
+.label {
+  font-size: 18px;
+  color: var(--color);
+  float: left;
+  margin-bottom: 10px;
+}
+
+.input {
+  color: var(--color);
+  background-color: var(--background-color);
+  padding: 8px 4px;
+  border-radius: 4px;
+}
+
+.input:focus {
+  outline: auto 2px var(--color);
+}
