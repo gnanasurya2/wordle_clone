@@ -1,7 +1,15 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  CACHE_MANAGER,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { User } from './user.entity';
 import { CreateUserDto } from './user.dto';
-import e from 'express';
+import { Cache } from 'cache-manager';
+import { AuthService } from 'src/auth/auth.service';
+
 @Injectable()
 export class UsersService {
   async create(createUserDto: CreateUserDto) {

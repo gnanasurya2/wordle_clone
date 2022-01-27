@@ -11,7 +11,7 @@ const GameTitles = ({ data, wrongRow }: GameTilesProps) => {
     <div className={styles.container}>
       <div className={styles.gameBoard}>
         {data.map((row, index) => (
-          <Row data={row} isWrong={wrongRow === index} />
+          <Row data={row} isWrong={wrongRow === index} key={`row-${index}`} />
         ))}
       </div>
     </div>

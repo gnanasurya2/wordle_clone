@@ -2,54 +2,13 @@ import axios from "../../helpers/axios";
 import React, { KeyboardEvent, useEffect, useRef, useState } from "react";
 import GameTiles from "../GameTiles/GameTiles";
 import Keyboard from "../Keyboard/Keyboard";
-type stateType = [string, null];
+type stateType = Array<
+  Array<[string, "present" | "absent" | "correct" | null]>
+>;
+
 const GameBoard = () => {
-  const [data, setData] = useState<
-    Array<Array<[string, "present" | "absent" | "correct" | null]>>
-  >([
-    [
-      ["", null],
-      ["", null],
-      ["", null],
-      ["", null],
-      ["", null],
-    ],
-    [
-      ["", null],
-      ["", null],
-      ["", null],
-      ["", null],
-      ["", null],
-    ],
-    [
-      ["", null],
-      ["", null],
-      ["", null],
-      ["", null],
-      ["", null],
-    ],
-    [
-      ["", null],
-      ["", null],
-      ["", null],
-      ["", null],
-      ["", null],
-    ],
-    [
-      ["", null],
-      ["", null],
-      ["", null],
-      ["", null],
-      ["", null],
-    ],
-    [
-      ["", null],
-      ["", null],
-      ["", null],
-      ["", null],
-      ["", null],
-    ],
-  ]);
+  const [data, setData] = useState<stateType | null>(null);
+  const [initialFetch, setInitialFetch] = useState(false);
   const currentRow = useRef(0);
   const [wrongRow, setWrongRow] = useState(10);
   const [keyboardValues, setKeyboardValues] = useState(
@@ -57,45 +16,55 @@ const GameBoard = () => {
   );
   useEffect(() => {
     axios
-      .get("/")
-      .then((res) => console.log("base", res))
+      .get("/stats/gameState")
+      .then((res) => {
+        console.log("res", res.data);
+        setData(res.data.gameState);
+        currentRow.current = res.data.currentRow + 1;
+        setInitialFetch(true);
+      })
       .catch((err) => console.log("base err", err));
   }, []);
   const validateRow = () => {
-    if (Math.random() < 0.6) {
-      setWrongRow(currentRow.current);
+    if (!data) {
       return;
-    } else {
-      setWrongRow(10);
     }
     const newData = [...data],
-      row = currentRow.current;
-    console.log("current row", newData[row]);
+      row = currentRow.current,
+      word = newData[row]
+        .map((ele) => ele[0])
+        .join("")
+        .toLowerCase();
     const map = new Map<string, string>();
-    for (let i = 0; i < 5; i++) {
-      const rand = Math.random();
-
-      if (rand < 0.3) {
-        newData[row][i][1] = "absent";
-        map.set(newData[row][i][0], "absent");
-      } else if (rand > 0.3 && rand < 0.6) {
-        newData[row][i][1] = "present";
-        map.set(newData[row][i][0], "present");
-      } else {
-        newData[row][i][1] = "correct";
-        map.set(newData[row][i][0], "correct");
-      }
-    }
-    setKeyboardValues(map);
-    if (row <= 4) {
-      currentRow.current = row + 1;
-    }
-    setData(newData);
+    axios
+      .post("/words/validateWord", { word, row })
+      .then((res) => {
+        console.log("response", res.data);
+        const rowValidator = res.data.res;
+        if (!res.data.isPresent) {
+          setWrongRow(row);
+          return;
+        } else {
+          setWrongRow(10);
+        }
+        for (let i = 0; i < 5; i++) {
+          newData[row][i][1] = rowValidator[i][1];
+          map.set(newData[row][i][0], rowValidator[i][1]);
+        }
+        setKeyboardValues(map);
+        if (row <= 4) {
+          currentRow.current = row + 1;
+        }
+        setData(newData);
+      })
+      .catch((err) => {
+        console.log("err", err);
+      });
   };
   function keyDownHandler(this: HTMLElement | void, event: any) {
-    console.log(event);
     const key: string = event.key;
-    const newData = [...data];
+    const newData = data ? [...data] : [];
+
     if (/^[a-z]{1}$/i.test(key)) {
       for (let i = 0; i < 5; i++) {
         if (newData[currentRow.current][i][0] === "") {
@@ -123,14 +92,23 @@ const GameBoard = () => {
     setData(newData);
   }
   useEffect(() => {
-    document?.addEventListener("keydown", keyDownHandler);
+    if (wrongRow !== 10) {
+      setTimeout(() => setWrongRow(10), 600);
+    }
+  }, [wrongRow]);
+  useEffect(() => {
+    if (initialFetch) {
+      console.log("key down handler");
+      document?.addEventListener("keydown", keyDownHandler);
+    }
+
     return () => {
       document?.removeEventListener("keydown", keyDownHandler);
     };
-  }, []);
+  }, [initialFetch]);
   return (
     <div>
-      <GameTiles data={data} wrongRow={wrongRow} />
+      {data ? <GameTiles data={data} wrongRow={wrongRow} /> : null}
       <Keyboard
         currentRow={currentRow.current}
         map={keyboardValues}

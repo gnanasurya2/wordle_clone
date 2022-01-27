@@ -1,14 +1,17 @@
 import {
+  AfterInsert,
   BaseEntity,
   BeforeInsert,
   Column,
   CreateDateColumn,
   Entity,
+  getConnection,
   PrimaryGeneratedColumn,
   Unique,
   UpdateDateColumn,
 } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
+import { Stats } from 'src/stats/stats.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -36,5 +39,17 @@ export class User extends BaseEntity {
 
   async validatePassword(password: string): Promise<boolean> {
     return await bcrypt.compare(password, this.password);
+  }
+  @AfterInsert()
+  async createStat() {
+    await getConnection()
+      .createQueryBuilder()
+      .insert()
+      .into(Stats)
+      .values({
+        userId: this.id,
+        guessDistribution: ['0', '0', '0', '0', '0', '0'],
+      })
+      .execute();
   }
 }

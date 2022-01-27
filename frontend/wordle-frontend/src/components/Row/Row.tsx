@@ -6,17 +6,15 @@ type RowProps = {
   isWrong: boolean;
 };
 const Row = ({ data, isWrong }: RowProps) => {
-  const [wrong, setWrong] = useState(isWrong);
-  useEffect(() => {
-    if (isWrong) {
-      setTimeout(() => setWrong(false), 600);
-    }
-    setWrong(isWrong);
-  }, [isWrong]);
   return (
-    <div className={styles.row} data-state={wrong ? "wrong" : "right"}>
+    <div className={styles.row} data-state={isWrong ? "wrong" : "right"}>
       {data.map((ele, index) => (
-        <Tile letter={ele[0]} state={ele[1]} index={index} />
+        <Tile
+          letter={ele[0]}
+          state={ele[1]}
+          index={index}
+          key={`tile-${index}`}
+        />
       ))}
     </div>
   );

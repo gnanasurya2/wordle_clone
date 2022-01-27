@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Headers,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CreateUserDto } from './user.dto';
 import { UsersService } from './users.service';
 
@@ -9,10 +18,5 @@ export class UsersController {
   @Post('/create')
   create(@Body() creaUserDto: CreateUserDto) {
     return this.usersService.create(creaUserDto);
-  }
-
-  @Get(':id')
-  show(@Param('id') id: string) {
-    return this.usersService.showById(+id);
   }
 }

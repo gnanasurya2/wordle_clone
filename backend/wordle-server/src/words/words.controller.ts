@@ -2,23 +2,19 @@ import {
   Body,
   Controller,
   Get,
-  HttpCode,
-  HttpException,
-  HttpStatus,
+  Headers,
   Param,
   Post,
+  UseGuards,
 } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CreateWordDto } from './words.dto';
 import { WordsService } from './words.service';
 
 @Controller('words')
+@UseGuards(JwtAuthGuard)
 export class WordsController {
   constructor(private readonly wordsService: WordsService) {}
-
-  @Post()
-  create(@Body() payload: CreateWordDto) {
-    return this.wordsService.create(payload);
-  }
 
   @Get(':word')
   updateFrequency(@Param('word') word: string) {
@@ -36,7 +32,11 @@ export class WordsController {
   }
 
   @Post('/validateWord')
-  validate(@Body() { word }: CreateWordDto) {
-    return this.wordsService.findByWord(word);
+  validate(
+    @Body() { word, row }: { word: string; row: number },
+    @Headers('Authorization') token: string,
+  ) {
+    const userToken = token.split(' ')[1];
+    return this.wordsService.validateWord(word, row, userToken);
   }
 }

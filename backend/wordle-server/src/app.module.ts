@@ -8,8 +8,11 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { WordsModule } from './words/words.module';
 import { Word } from './words/words.entity';
+import { StatsModule } from './stats/stats.module';
+import { Stats } from './stats/stats.entity';
+import * as redisStore from 'cache-manager-redis-store';
 
-const entities = [User, Word];
+const entities = [User, Word, Stats];
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -18,6 +21,8 @@ const entities = [User, Word];
     CacheModule.register({
       //number of seconds in a day
       ttl: 86400,
+      isGlobal: true,
+      store: redisStore,
     }),
     TypeOrmModule.forRoot({
       type: process.env.DB_TYPE as any,
@@ -32,6 +37,7 @@ const entities = [User, Word];
     UsersModule,
     AuthModule,
     WordsModule,
+    StatsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
