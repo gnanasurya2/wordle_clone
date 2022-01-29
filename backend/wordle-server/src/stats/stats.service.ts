@@ -9,6 +9,7 @@ import { Cache } from 'cache-manager';
 import { AuthService } from 'src/auth/auth.service';
 import { Stats } from './stats.entity';
 import { gameState } from '../constants/gameState';
+import { getConnection } from 'typeorm';
 @Injectable()
 export class StatsService {
   constructor(
@@ -35,10 +36,25 @@ export class StatsService {
     }
   }
 
-  async update(id: string) {
+  async update(id: string, isComplete: boolean, completedRow?: number) {
     const user = await this.findById(id);
     console.log('user', user, id);
     // Stats.update(id)
+    let guessRow = [...user.guessDistribution],
+      totalDate = new Date().getTime(),
+      lastDate = new Date(user.lastCompletedDate).getTime();
+    if (isComplete) {
+      guessRow[completedRow + 1] += 1;
+    }
+    await getConnection()
+      .createQueryBuilder()
+      .update(Stats)
+      .set({
+        didNotFinish: () => (isComplete ? 'didNotFinish' : 'didNotFinish + 1'),
+        guessDistribution: guessRow,
+        totalAttempts: () => 'totalAttempts + 1',
+        completed: () => (isComplete ? 'didNotFinish + 1' : 'didNotFinish'),
+      });
     return { ...user };
   }
 
@@ -48,13 +64,13 @@ export class StatsService {
     if (user) {
       let data: null | string = await this.cacheManager.get(user['userId']),
         todayDate = new Date().toISOString().split('T')[0];
-
+      const response = {
+        todayDate,
+        gameState,
+        currentRow: -1,
+        isComplete: false,
+      };
       if (data === null) {
-        const response = {
-          todayDate,
-          gameState,
-          currentRow: -1,
-        };
         await this.cacheManager.set(
           user['userId'],
           JSON.stringify({ ...response, id: user['userId'] }),
@@ -68,11 +84,6 @@ export class StatsService {
             ...userState,
           };
         } else {
-          const response = {
-            todayDate,
-            gameState,
-            currentRow: -1,
-          };
           await this.cacheManager.set(
             user['userId'],
             JSON.stringify({ ...response, id: user['userId'] }),

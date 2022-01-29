@@ -11,6 +11,7 @@ import { Word } from './words/words.entity';
 import { StatsModule } from './stats/stats.module';
 import { Stats } from './stats/stats.entity';
 import * as redisStore from 'cache-manager-redis-store';
+import { ScheduleModule } from '@nestjs/schedule';
 
 const entities = [User, Word, Stats];
 @Module({
@@ -24,6 +25,7 @@ const entities = [User, Word, Stats];
       isGlobal: true,
       store: redisStore,
     }),
+    ScheduleModule.forRoot(),
     TypeOrmModule.forRoot({
       type: process.env.DB_TYPE as any,
       host: process.env.DB_HOST,

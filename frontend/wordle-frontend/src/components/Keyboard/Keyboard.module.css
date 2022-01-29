@@ -14,7 +14,7 @@
   margin: 0px 4px;
   border-radius: 4px;
   font-size: 1rem;
-  color: var(--white);
+  color: var(--black);
   text-transform: uppercase;
 }
 
@@ -24,12 +24,15 @@
 
 .key[data-state="correct"] {
   background-color: var(--correct);
+  color: var(--white);
 }
 
 .key[data-state="present"] {
   background-color: var(--present);
+  color: var(--white);
 }
 
 .key[data-state="absent"] {
   background-color: var(--grey);
+  color: var(--white);
 }

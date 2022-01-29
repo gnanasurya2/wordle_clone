@@ -52,11 +52,10 @@ const Keyboard = ({ map, currentRow, onChange }: KeyboardProps) => {
         } else return ele;
       })
     );
-    console.log("new data", newData);
     setTimeout(() => {
       setData(newData);
     }, 3000);
-  }, [currentRow]);
+  }, [currentRow, map]);
   return (
     <div className={styles.keyboard}>
       {data.map((row, index) => (

@@ -2,10 +2,18 @@ import axios from "../../helpers/axios";
 import React, { KeyboardEvent, useEffect, useRef, useState } from "react";
 import GameTiles from "../GameTiles/GameTiles";
 import Keyboard from "../Keyboard/Keyboard";
+import Toast from "../Toast/Toast";
 type stateType = Array<
   Array<[string, "present" | "absent" | "correct" | null]>
 >;
-
+const TOAST_VALUES = [
+  "phenomenal",
+  "Awesome",
+  "Splendid",
+  "Great",
+  "Good",
+  "Phew!",
+];
 const GameBoard = () => {
   const [data, setData] = useState<stateType | null>(null);
   const [initialFetch, setInitialFetch] = useState(false);
@@ -14,19 +22,39 @@ const GameBoard = () => {
   const [keyboardValues, setKeyboardValues] = useState(
     new Map<string, string>()
   );
+  const [toastText, setToastText] = useState("");
   useEffect(() => {
     axios
       .get("/stats/gameState")
       .then((res) => {
         console.log("res", res.data);
-        setData(res.data.gameState);
+        const gameState = res.data.gameState;
+        setData(gameState);
         currentRow.current = res.data.currentRow + 1;
+        const keyMap = new Map<string, string>();
+        for (let i = 0; i <= res.data.currentRow; i++) {
+          for (let j = 0; j < 5; j++) {
+            keyMap.set(gameState[i][j][0].toUpperCase(), gameState[i][j][1]);
+          }
+        }
+        if (res.data.isComplete) {
+          setToastText(TOAST_VALUES[res.data.currentRow]);
+          currentRow.current = 10;
+        }
+        setKeyboardValues(keyMap);
         setInitialFetch(true);
       })
       .catch((err) => console.log("base err", err));
   }, []);
+
+  useEffect(() => {
+    if (toastText) {
+      setTimeout(() => setToastText(""), 1000);
+    }
+  }, [toastText]);
+
   const validateRow = () => {
-    if (!data) {
+    if (!data || currentRow.current === 10) {
       return;
     }
     const newData = [...data],
@@ -43,6 +71,7 @@ const GameBoard = () => {
         const rowValidator = res.data.res;
         if (!res.data.isPresent) {
           setWrongRow(row);
+          setToastText("Not in word list");
           return;
         } else {
           setWrongRow(10);
@@ -52,10 +81,14 @@ const GameBoard = () => {
           map.set(newData[row][i][0], rowValidator[i][1]);
         }
         setKeyboardValues(map);
+        setData(newData);
+        if (res.data.isComplete) {
+          setToastText(TOAST_VALUES[row]);
+          currentRow.current = 10;
+        }
         if (row <= 4) {
           currentRow.current = row + 1;
         }
-        setData(newData);
       })
       .catch((err) => {
         console.log("err", err);
@@ -116,6 +149,7 @@ const GameBoard = () => {
           keyDownHandler(event);
         }}
       />
+      <Toast text={toastText} />
     </div>
   );
 };

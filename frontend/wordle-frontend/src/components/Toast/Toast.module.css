@@ -1,0 +1,47 @@
+.wrapper {
+  position: absolute;
+  top: 10%;
+  width: 100%;
+}
+
+.container {
+  background-color: var(--color);
+  padding: 8px 16px;
+  border-radius: 4px;
+  color: var(--background-color);
+  width: fit-content;
+  margin: auto;
+}
+
+.visible {
+  animation: slideIn 0.7s ease-in;
+  display: block;
+}
+
+@keyframes slideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+}
+
+.hidden {
+  animation: slideOut 0.7s ease-out forwards;
+}
+
+@keyframes slideOut {
+  0% {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+}

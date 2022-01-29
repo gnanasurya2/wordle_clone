@@ -11,6 +11,7 @@ import { Word } from './words.entity';
 import { Cache } from 'cache-manager';
 import * as data from '../constants/wordlist.json';
 import { StatsService } from 'src/stats/stats.service';
+import { Cron, CronExpression } from '@nestjs/schedule';
 @Injectable()
 export class WordsService {
   constructor(
@@ -36,14 +37,31 @@ export class WordsService {
       throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
-
+  async findADailyWord() {
+    const wordsList = data.words;
+    try {
+      let newWord = wordsList[Math.floor(Math.random() * wordsList.length)];
+      while (!(await this.canItbeADailyWordle(newWord))) {
+        newWord = wordsList[Math.floor(Math.random() * wordsList.length)];
+      }
+      await this.setDailyWordle(newWord);
+      return newWord;
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  async handleCron() {
+    const dailyWord = await this.findADailyWord();
+    await this.setDailyWordle(dailyWord);
+    console.log('cron logging', dailyWord);
+  }
   async setDailyWordle(word: string) {
     const daily = await this.findByWord(word);
     try {
-      //commented for dev purpose
-      // await this.connection.query(
-      //   `UPDATE word SET alreadyUsedAsWordle = 1 WHERE id = ${daily.id}`,
-      // );
+      await this.connection.query(
+        `UPDATE word SET alreadyUsedAsWordle = 1 WHERE id = ${daily.id}`,
+      );
       await this.cacheManager.set('dailyWord', word, { ttl: 86400 });
       return {
         message: 'updated successfully',
@@ -58,7 +76,6 @@ export class WordsService {
     return !wordData.alreadyUsedAsWordle;
   }
 
-  async findGameState() {}
   async validateWord(word: string, row: number, token: string) {
     const wordsList = data.words;
     const isPresent = wordsList.includes(word);
@@ -71,16 +88,8 @@ export class WordsService {
       );
       console.log('word', word);
       if (!dailyWord) {
-        try {
-          let newWord = wordsList[Math.floor(Math.random() * wordsList.length)];
-          while (!(await this.canItbeADailyWordle(newWord))) {
-            newWord = wordsList[Math.floor(Math.random() * wordsList.length)];
-          }
-          await this.setDailyWordle(newWord);
-          dailyWord = newWord;
-        } catch (err) {
-          throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        dailyWord = await this.findADailyWord();
+        await this.setDailyWordle(dailyWord);
       }
       const res = [];
       for (let i = 0; i < word.length; i++) {

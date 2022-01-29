@@ -64,9 +64,11 @@ function GameScreen() {
         >
           <Instructions />
         </Overlay>
-        <Overlay isOpen={isStatisticsOpen} header={false}>
-          <Statistics onClose={() => setIsStatisticsOpen(false)} />
-        </Overlay>
+        {isStatisticsOpen ? (
+          <Overlay isOpen={isStatisticsOpen} header={false}>
+            <Statistics onClose={() => setIsStatisticsOpen(false)} />
+          </Overlay>
+        ) : null}
       </div>
     </div>
   );

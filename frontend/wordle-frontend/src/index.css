@@ -6,7 +6,7 @@
 
 :root {
   --black: #1a1a1b;
-  --white: #d7dadc;
+  --white: #ffffff;
   --grey: #3a3a3c;
   --orange: #f5793a;
   --green: #538d4e;
@@ -19,11 +19,15 @@
 [data-theme="light"] {
   --background-color: var(--white);
   --color: var(--black);
+  --tile-background: var(--white);
+  --border-color: #d3d6da;
 }
 
 [data-theme="dark"] {
   --background-color: var(--black);
   --color: var(--white);
+  --tile-background: var(--black);
+  --border-color: #3a3a3c;
 }
 button {
   background-color: transparent;
