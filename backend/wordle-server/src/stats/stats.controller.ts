@@ -28,7 +28,18 @@ export class StatsController {
   }
 
   @Post('/update')
-  async update(@Body() { id }: { id: string }) {
-    return await this.statsService.update(id);
+  async update(
+    @Body()
+    {
+      id,
+      isComplete,
+      completedRow,
+    }: {
+      id: string;
+      isComplete: boolean;
+      completedRow?: number;
+    },
+  ) {
+    return await this.statsService.update(id, isComplete, completedRow);
   }
 }

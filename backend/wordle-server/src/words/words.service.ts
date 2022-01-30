@@ -113,6 +113,11 @@ export class WordsService {
           currentRow: userState.currentRow + 1,
         }),
       );
+      if (word === dailyWord) {
+        this.statsService.update(userState.id, true, row);
+      } else if (row === 5) {
+        this.statsService.update(userState.id, false);
+      }
       return {
         isPresent,
         word,

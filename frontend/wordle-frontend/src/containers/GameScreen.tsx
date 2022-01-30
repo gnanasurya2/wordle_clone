@@ -10,7 +10,7 @@ import Statistics from "../components/Statistics/Statistics";
 
 function GameScreen() {
   const [isOverlayOpen, setIsOverlayOpen] = useState(false);
-  const [isInstructionsOpen, setIsInstructionsOpen] = useState(true);
+  const [isInstructionsOpen, setIsInstructionsOpen] = useState(false);
   const [contrastMode, setContrastMode] = useState("normal");
   const [isStatisticsOpen, setIsStatisticsOpen] = useState(false);
   const navigate = useNavigate();

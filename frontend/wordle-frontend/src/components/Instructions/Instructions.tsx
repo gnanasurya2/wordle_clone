@@ -19,44 +19,47 @@ const Instructions = () => {
         <div className={styles.rowsData}>
           <Row
             data={[
-              ["G", null],
-              ["N", null],
-              ["A", "present"],
+              ["G", "correct"],
+              ["N", "absent"],
+              ["A", "absent"],
               ["N", "absent"],
               ["A", "correct"],
             ]}
+            isWrong={false}
           />
         </div>
         <p>
-          The letter <strong>W</strong> is in the word and in the correct spot.
+          The letter <strong>G</strong> is in the word and in the correct spot.
         </p>
         <div className={styles.rowsData}>
           <Row
             data={[
-              ["G", null],
-              ["N", null],
-              ["A", "present"],
-              ["N", "absent"],
-              ["A", "correct"],
+              ["S", "absent"],
+              ["U", "absent"],
+              ["R", "present"],
+              ["Y", "absent"],
+              ["A", "absent"],
             ]}
+            isWrong={false}
           />
         </div>
         <p>
-          The letter <strong>I</strong> is in the word but in the wrong spot.
+          The letter <strong>R</strong> is in the word but in the wrong spot.
         </p>
         <div className={styles.rowsData}>
           <Row
             data={[
-              ["G", null],
-              ["N", null],
+              ["G", "absent"],
+              ["N", "absent"],
               ["A", "present"],
               ["N", "absent"],
               ["A", "correct"],
             ]}
+            isWrong={false}
           />
         </div>
         <p>
-          The letter <strong>U</strong> is not in the word in any spot.
+          The letter <strong>N</strong> is not in the word in any spot.
         </p>
       </div>
       <p style={{ marginTop: "10px" }}>

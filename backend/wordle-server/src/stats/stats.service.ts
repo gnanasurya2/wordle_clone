@@ -41,10 +41,19 @@ export class StatsService {
     console.log('user', user, id);
     // Stats.update(id)
     let guessRow = [...user.guessDistribution],
-      totalDate = new Date().getTime(),
-      lastDate = new Date(user.lastCompletedDate).getTime();
+      todayDate = new Date().getTime(),
+      lastDate = new Date(user.lastCompletedDate).getTime(),
+      diff = Math.floor((lastDate - todayDate) / (1000 * 24 * 60 * 60)),
+      currentStreak = user.currentStreak;
     if (isComplete) {
-      guessRow[completedRow + 1] += 1;
+      guessRow[completedRow + 1] = (+guessRow[completedRow + 1] + 1).toString();
+      if (diff === 1) {
+        currentStreak += 1;
+      } else {
+        currentStreak = 1;
+      }
+    } else {
+      currentStreak = 0;
     }
     await getConnection()
       .createQueryBuilder()
@@ -53,8 +62,15 @@ export class StatsService {
         didNotFinish: () => (isComplete ? 'didNotFinish' : 'didNotFinish + 1'),
         guessDistribution: guessRow,
         totalAttempts: () => 'totalAttempts + 1',
-        completed: () => (isComplete ? 'didNotFinish + 1' : 'didNotFinish'),
-      });
+        completed: () => (isComplete ? 'completed + 1' : 'completed'),
+        currentStreak: currentStreak,
+        maxStreak: Math.max(currentStreak, user.maxStreak),
+        lastCompletedDate: isComplete
+          ? new Date().toISOString().split('T')[0]
+          : user.lastCompletedDate,
+      })
+      .where('userId = :id', { id: id })
+      .execute();
     return { ...user };
   }
 
