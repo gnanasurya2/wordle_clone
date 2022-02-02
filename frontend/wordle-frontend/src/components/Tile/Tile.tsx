@@ -1,10 +1,11 @@
+import { possibleTileState } from "../../types";
 import styles from "./Tile.module.css";
 type TileProps = {
   letter: string;
-  state?: "absent" | "correct" | "present" | null;
+  state?: possibleTileState;
   index: number;
 };
-const Tile = ({ letter, state = null, index }: TileProps) => {
+const Tile = ({ letter, state = "", index }: TileProps) => {
   return (
     <div className={styles.wrapper} data-element={letter ? "true" : "false"}>
       <div className={styles.content} data-state={state} data-index={index}>

@@ -3,9 +3,8 @@ import React, { KeyboardEvent, useEffect, useRef, useState } from "react";
 import GameTiles from "../GameTiles/GameTiles";
 import Keyboard from "../Keyboard/Keyboard";
 import Toast from "../Toast/Toast";
-type stateType = Array<
-  Array<[string, "present" | "absent" | "correct" | null]>
->;
+import { gameStateType, possibleTileState } from "../../types";
+
 const TOAST_VALUES = [
   "phenomenal",
   "Awesome",
@@ -15,26 +14,29 @@ const TOAST_VALUES = [
   "Phew!",
 ];
 const GameBoard = () => {
-  const [data, setData] = useState<stateType | null>(null);
+  const [data, setData] = useState<gameStateType | null>(null);
   const [initialFetch, setInitialFetch] = useState(false);
   const currentRow = useRef(0);
   const [wrongRow, setWrongRow] = useState(10);
   const [keyboardValues, setKeyboardValues] = useState(
-    new Map<string, string>()
+    new Map<string, possibleTileState>()
   );
   const [toastText, setToastText] = useState("");
   useEffect(() => {
     axios
-      .get("/stats/gameState")
+      .get("/users/state")
       .then((res) => {
         console.log("res", res.data);
-        const gameState = res.data.gameState;
+        const gameState: gameStateType = res.data.gameState;
         setData(gameState);
         currentRow.current = res.data.currentRow + 1;
-        const keyMap = new Map<string, string>();
-        for (let i = 0; i <= res.data.currentRow; i++) {
-          for (let j = 0; j < 5; j++) {
-            keyMap.set(gameState[i][j][0].toUpperCase(), gameState[i][j][1]);
+        const keyMap = new Map<string, possibleTileState>();
+        for (let col = 0; col <= res.data.currentRow; col++) {
+          for (let row = 0; row < 5; row++) {
+            keyMap.set(
+              gameState.columns[col][row].key.toUpperCase(),
+              gameState.columns[col][row].state
+            );
           }
         }
         if (res.data.isComplete) {
@@ -42,6 +44,7 @@ const GameBoard = () => {
           currentRow.current = 10;
         }
         setKeyboardValues(keyMap);
+        console.log("keyboard", keyMap);
         setInitialFetch(true);
       })
       .catch((err) => console.log("base err", err));
@@ -57,18 +60,19 @@ const GameBoard = () => {
     if (!data || currentRow.current === 10) {
       return;
     }
-    const newData = [...data],
+    const newData = { ...data },
       row = currentRow.current,
-      word = newData[row]
-        .map((ele) => ele[0])
+      word = newData.columns[row]
+        .map((ele) => ele.key)
         .join("")
         .toLowerCase();
-    const map = new Map<string, string>();
+    const map = new Map<string, possibleTileState>();
     axios
       .post("/words/validateWord", { word, row })
       .then((res) => {
         console.log("response", res.data);
-        const rowValidator = res.data.res;
+        const rowValidator: { key: string; state: possibleTileState }[] =
+          res.data.res;
         if (!res.data.isPresent) {
           setWrongRow(row);
           setToastText("Not in word list");
@@ -77,8 +81,12 @@ const GameBoard = () => {
           setWrongRow(10);
         }
         for (let i = 0; i < 5; i++) {
-          newData[row][i][1] = rowValidator[i][1];
-          map.set(newData[row][i][0], rowValidator[i][1]);
+          newData.columns[row][i] = {
+            ...newData.columns[row][i],
+            state: rowValidator[i].state,
+          };
+          //change it to objects
+          map.set(newData.columns[row][i].key, rowValidator[i].state);
         }
         setKeyboardValues(map);
         setData(newData);
@@ -95,27 +103,30 @@ const GameBoard = () => {
       });
   };
   function keyDownHandler(this: HTMLElement | void, event: any) {
+    if (data === null) {
+      return;
+    }
     const key: string = event.key;
-    const newData = data ? [...data] : [];
-
+    const newData = { ...data };
+    const col = currentRow.current;
     if (/^[a-z]{1}$/i.test(key)) {
-      for (let i = 0; i < 5; i++) {
-        if (newData[currentRow.current][i][0] === "") {
-          newData[currentRow.current][i][0] = key.toUpperCase();
+      for (let row = 0; row < 5; row++) {
+        if (newData.columns[col][row].key === "") {
+          newData.columns[col][row].key = key.toUpperCase();
           break;
         }
       }
     } else if (key === "Backspace") {
-      for (let i = 4; i >= 0; i--) {
-        if (newData[currentRow.current][i][0] !== "") {
-          newData[currentRow.current][i][0] = "";
+      for (let row = 4; row >= 0; row--) {
+        if (newData.columns[col][row].key !== "") {
+          newData.columns[col][row].key = "";
           break;
         }
       }
     } else if (key === "Enter") {
       let isComplete = true;
-      for (let i = 0; i < 5; i++) {
-        isComplete = newData[currentRow.current][i][0] !== "";
+      for (let row = 0; row < 5; row++) {
+        isComplete = newData.columns[col][row].key !== "";
       }
       if (isComplete) {
         console.log("completed");
@@ -126,6 +137,7 @@ const GameBoard = () => {
   }
   useEffect(() => {
     if (wrongRow !== 10) {
+      //learn about queue microtask
       setTimeout(() => setWrongRow(10), 600);
     }
   }, [wrongRow]);

@@ -21,12 +21,6 @@ export class StatsController {
     return this.statsService.fetchUser(userId);
   }
 
-  @Get('/gameState')
-  async getGameState(@Headers('Authorization') token: string) {
-    const userToken = token.split(' ')[1];
-    return this.statsService.getGameState(userToken);
-  }
-
   @Post('/update')
   async update(
     @Body()

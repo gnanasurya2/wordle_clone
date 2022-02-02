@@ -1,17 +1,22 @@
+import { gameStateType } from "../../types";
 import Row from "../Row/Row";
 import Tile from "../Tile/Tile";
 import styles from "./GameTiles.module.css";
 
 type GameTilesProps = {
-  data: Array<Array<[string, "present" | "absent" | "correct" | null]>>;
+  data: gameStateType;
   wrongRow: number;
 };
 const GameTitles = ({ data, wrongRow }: GameTilesProps) => {
   return (
     <div className={styles.container}>
       <div className={styles.gameBoard}>
-        {data.map((row, index) => (
-          <Row data={row} isWrong={wrongRow === index} key={`row-${index}`} />
+        {Object.keys(data.columns).map((col, index) => (
+          <Row
+            data={data.columns[col]}
+            isWrong={wrongRow === index}
+            key={col}
+          />
         ))}
       </div>
     </div>

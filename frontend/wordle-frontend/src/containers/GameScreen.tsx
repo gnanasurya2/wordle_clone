@@ -15,6 +15,7 @@ function GameScreen() {
   const [isStatisticsOpen, setIsStatisticsOpen] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
+    //add a function called loadSettings to abstract all settings
     const token = localStorage.getItem("token");
     if (!token) {
       navigate("/login");

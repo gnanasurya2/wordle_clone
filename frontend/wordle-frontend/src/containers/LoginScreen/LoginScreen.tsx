@@ -16,7 +16,7 @@ const LoginScreen = () => {
     };
     console.log("values", target.email.value, target.password.value);
     axios
-      .post("http://localhost:3443/auth/login", {
+      .post("http://localhost:3443/users/login", {
         email: target.email.value,
         password: target.password.value,
       })

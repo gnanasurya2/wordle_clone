@@ -1,8 +1,12 @@
 import styles from "./Row.module.css";
 import Tile from "../Tile/Tile";
 import { useEffect, useState } from "react";
+import { possibleTileState } from "../../types";
 type RowProps = {
-  data: Array<[string, "present" | "absent" | "correct" | null]>;
+  data: Array<{
+    key: string;
+    state: possibleTileState;
+  }>;
   isWrong: boolean;
 };
 const Row = ({ data, isWrong }: RowProps) => {
@@ -10,8 +14,8 @@ const Row = ({ data, isWrong }: RowProps) => {
     <div className={styles.row} data-state={isWrong ? "wrong" : "right"}>
       {data.map((ele, index) => (
         <Tile
-          letter={ele[0]}
-          state={ele[1]}
+          letter={ele.key}
+          state={ele.state}
           index={index}
           key={`tile-${index}`}
         />

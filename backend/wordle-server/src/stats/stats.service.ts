@@ -8,8 +8,8 @@ import {
 import { Cache } from 'cache-manager';
 import { AuthService } from 'src/auth/auth.service';
 import { Stats } from './stats.entity';
-import { gameState } from '../constants/gameState';
 import { getConnection } from 'typeorm';
+
 @Injectable()
 export class StatsService {
   constructor(
@@ -74,41 +74,41 @@ export class StatsService {
     return { ...user };
   }
 
-  async getGameState(token: string) {
-    const user = await this.authService.decode(token);
+  // async getGameState(token: string) {
+  //   const user = await this.authService.decode(token);
 
-    if (user) {
-      let data: null | string = await this.cacheManager.get(user['userId']),
-        todayDate = new Date().toISOString().split('T')[0];
-      const response = {
-        todayDate,
-        gameState,
-        currentRow: -1,
-        isComplete: false,
-      };
-      if (data === null) {
-        await this.cacheManager.set(
-          user['userId'],
-          JSON.stringify({ ...response, id: user['userId'] }),
-        );
-        return response;
-      } else {
-        const userState = JSON.parse(data);
+  //   if (user) {
+  //     let data: null | string = await this.cacheManager.get(user['userId']),
+  //       todayDate = new Date().toISOString().split('T')[0];
+  //     const response = {
+  //       todayDate,
+  //       gameState,
+  //       currentRow: -1,
+  //       isComplete: false,
+  //     };
+  //     if (data === null) {
+  //       await this.cacheManager.set(
+  //         user['userId'],
+  //         JSON.stringify({ ...response, id: user['userId'] }),
+  //       );
+  //       return response;
+  //     } else {
+  //       const userState = JSON.parse(data);
 
-        if (todayDate === userState.todayDate) {
-          return {
-            ...userState,
-          };
-        } else {
-          await this.cacheManager.set(
-            user['userId'],
-            JSON.stringify({ ...response, id: user['userId'] }),
-          );
-          return response;
-        }
-      }
-    }
-  }
+  //       if (todayDate === userState.todayDate) {
+  //         return {
+  //           ...userState,
+  //         };
+  //       } else {
+  //         await this.cacheManager.set(
+  //           user['userId'],
+  //           JSON.stringify({ ...response, id: user['userId'] }),
+  //         );
+  //         return response;
+  //       }
+  //     }
+  //   }
+  // }
 
   async findById(id: string) {
     return await Stats.findOne({

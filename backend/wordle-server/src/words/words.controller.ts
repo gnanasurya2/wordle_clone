@@ -16,11 +16,6 @@ import { WordsService } from './words.service';
 export class WordsController {
   constructor(private readonly wordsService: WordsService) {}
 
-  @Get(':word')
-  updateFrequency(@Param('word') word: string) {
-    return this.wordsService.update(word);
-  }
-
   @Get('/find/:word')
   findWord(@Param('word') word: string) {
     return this.wordsService.findByWord(word);
